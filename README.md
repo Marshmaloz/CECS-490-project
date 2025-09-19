@@ -1,6 +1,6 @@
 # nRF24L01 RC Link (2-Channel)
 
-A minimal **2-byte RC link** using two Arduinos, a pair of **nRF24L01(+) radios**, and two hobby servos.  
+A minimal **2-byte RC link** using two Arduinos, a pair of **eo1 ml01dp5  radios with EMI shiedling**, and two hobby servos.  
 
 - **Transmitter**: Reads a 2-axis joystick (`A0`, `A1`), applies dead-zone + calibration, sends 2 bytes (`ch1`, `ch2`).  
 - **Receiver**: Converts bytes into servo signals (`1000–2000 µs`) for pins **D2** and **D3**.
@@ -56,4 +56,5 @@ Both sketches must use the same radio settings:
 const uint64_t pipe = 0xE8E8F0F0E1LL;
 radio.setAutoAck(false);
 radio.setDataRate(RF24_250KBPS);
+
 
