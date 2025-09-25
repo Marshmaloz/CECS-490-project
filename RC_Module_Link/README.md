@@ -8,12 +8,12 @@ A minimal **2-byte RC link** using two Arduinos, a pair of **nRF24L01(+) radios*
 ---
 
 ## 📂 Project Structure
-
+```
 RC_Module_Link/
 ├── README.md
 ├── Transmitter_code.ino
 └── Receiver_Code.ino
----
+```
 
 ## 🔧 Hardware
 
