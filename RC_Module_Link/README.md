@@ -10,9 +10,9 @@ A minimal **2-byte RC link** using two Arduinos, a pair of **nRF24L01(+) radios*
 ## 📂 Project Structure
 
 RC_Module_Link/
- ├── README.md              # Documentation (setup, wiring, usage)
- ├── Transmitter_code.ino   # Reads joystick input & sends 2-byte data via nRF24L01
- └── Receiver_Code.ino      # Receives 2-byte data & controls two servos
+├── README.md
+├── Transmitter_code.ino
+└── Receiver_Code.ino
 ---
 
 ## 🔧 Hardware
