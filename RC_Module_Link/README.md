@@ -3,7 +3,7 @@
 This project implements a **4-channel RC link** with **Telemetry** and **PID stabilization** for a quadcopter, using two Arduinos and a pair of **E01-ML01DP5 nRF24L01(+) radios**.
 
 The original 2-channel concept has been expanded to a full flight control system:
-* **Transmitter**: Reads a 4-axis input (likely two joysticks), performs dead-zone/calibration, sends 4 control bytes (`ch1` to `ch4`), and displays **Roll, Pitch, and Yaw telemetry** received from the quadcopter.
+* **Transmitter**: Reads a 4-axis input (two joysticks), performs dead-zone/calibration, sends 4 control bytes (`ch1` to `ch4`), and displays **Roll, Pitch, and Yaw telemetry** received from the quadcopter.
 * **Receiver (Quadcopter)**: Manages radio communication, reads sensor data from an **MPU9250 IMU**, calculates flight corrections using **PID controllers** (Roll, Pitch, Yaw), drives four ESCs/motors, and sends the current angle telemetry back to the Transmitter.
 ## 📂 Project Structure
 ```
@@ -34,7 +34,7 @@ RC_Module_Link/
 | **Radio SPI** | D9, D10, D11, D12, D13 | D9, D10, D11, D12, D13 |
 | **Control** | A0, A1, A2, A4 (Joysticks) | N/A |
 | **Output** | N/A | D2, D3, D4, D5 (ESCs/Servos) |
-| **IMU** | N/A | I²C (SDA/SCL) |
+| **IMU** | | I²C (SDA/SCL) |
 
 ***
 
@@ -119,4 +119,5 @@ radio.setDataRate(RF24_250KBPS); // Max Range
 radio.setChannel(100);
 radio.setAutoAck(true);
 radio.enableAckPayload(); // Enables Telemetry (RX -> TX)
+
 
