@@ -6,10 +6,11 @@
 #include <PID_v1.h>
 #include "imu.h"
 #include "joystick.h"   // gives you Received_data + externs
+#include "MS5611.h"
 
 const uint64_t pipeIn = 0xE8E8F0F0E1LL;   // same as transmitter
 RF24 radio(9, 10);                        // CSN, CE
-
+MS5611 MS5611(0x77);
 // Single instance of the packet we receive
 Received_data received_data;
 
@@ -22,18 +23,28 @@ struct Telemetry {
   int16_t roll;     // example
   int16_t pitch;
   int16_t yaw; // battery in mV
+  int16_t M1;
+  int16_t M2;
+  int16_t M3;
+  int16_t M4;
 };
 
 double rollSet = 0,  rollInput = 0,  rollOut = 0;
 double pitchSet = 0, pitchInput = 0, pitchOut = 0;
 double yawSet = 0, yawInput =0, yawOut = 0;
+
 // Tunings (start here; you’ll tune later)
 double Kp_r = 3.0, Ki_r = 0.0, Kd_r = 0.03;
 double Kp_p = 3.0, Ki_p = 0.0, Kd_p = 0.03;
 double Kp_y = 3.0, Ki_y = 0.0, Kd_y = 0.03;
 
 const double MAX_YAW_RATE = 150.0;
-const int IDLE_THRESH = 1030;
+const int IDLE_THRESH = 1030;//minimium motor thorttle threshold
+const double MAX_ANGLE = 20.0;  // deg (start small)
+
+int m1,m2,m3,m4;//store the motors PWM values
+float pressure_bias;
+float Avg;
 // Create controllers
 PID rollPID (&rollInput,  &rollOut,  &rollSet,  Kp_r, Kp_r ? Ki_r : 0, Kd_r, DIRECT);
 PID pitchPID(&pitchInput, &pitchOut, &pitchSet, Kp_p, Kp_p ? Ki_p : 0, Kd_p, DIRECT);
@@ -47,12 +58,23 @@ void receive_the_data() {
     Telemetry t;
     t.roll  = (int16_t)(roll_Input * 10);
     t.pitch = (int16_t)(pitch_Input * 10);
-    t.yaw   = (int16_t)(yaw_Input   * 10);
+    t.yaw   = (int16_t)(yaw_Input   * 10);\
+    t.M1 = (m1);
+    t.M2 = (m2);
+    t.M3 = (m3);
+    t.M4 = (m4);
     radio.writeAckPayload(1, &t, sizeof(t));
     last_Time = millis();
   }
 }
 
+void Pressure_calibration(){
+  for(int i = 0; i < 10; i++){
+     MS5611.read();
+     Avg += MS5611.getAltitude();
+     pressure_bias = (Avg/10.0f);
+  }
+}
 void setup() {
   Serial.begin(115200);
   //attach the servo motor pulses to a digital Pin
@@ -98,6 +120,10 @@ void setup() {
   calibrateIMU();
   delay(100);
 
+  //init MS5611
+  MS5611.begin();
+  Pressure_calibration();//calibrate
+
   zeroYaw_init();
 
   rollPID.SetOutputLimits(-MIX_LIMIT, MIX_LIMIT);
@@ -121,7 +147,6 @@ void loop() {
 
   // IMU update
   read_IMU_and_Calculate_Angles();
-  const double MAX_ANGLE = 20.0;  // deg (start small)
 
   rollSet  = constrain((ch3_updated - 1500) * (MAX_ANGLE / 500.0), -MAX_ANGLE, MAX_ANGLE);
   pitchSet = constrain((ch4_updated - 1500) * (MAX_ANGLE / 500.0), -MAX_ANGLE, MAX_ANGLE);
@@ -137,7 +162,6 @@ void loop() {
   yawPID.Compute();
 
   int throttle = ch2_updated;
-  int m1,m2,m3,m4;
 
   if(throttle <= IDLE_THRESH){
     m1 = throttle;
@@ -161,15 +185,18 @@ void loop() {
   ChannelOne_Two.writeMicroseconds(m2);
   ChannelThree_One.writeMicroseconds(m3);
   ChannelFour_One.writeMicroseconds(m4);
- 
 
+  MS5611.read();
+  Serial.println(MS5611.getAltitude()-pressure_bias);
+/*
   Serial.print("Ch1: ");
-  Serial.print(m1);
+  Serial.print(roll_Input);
   Serial.print("   Ch2: ");
-  Serial.print(m2);
+  Serial.print(pitch_Input);
   Serial.print("     Ch3: ");
-  Serial.print(m3);
+  Serial.print(yaw_Input);
   Serial.print("        Ch4: ");
   Serial.println(m4);
+*/
 
 }
