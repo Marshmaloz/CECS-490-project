@@ -34,20 +34,20 @@ double pitchSet = 0, pitchInput = 0, pitchOut = 0;
 double yawSet = 0, yawInput =0, yawOut = 0;
 
 // Tunings (start here; you’ll tune later)
-double Kp_r = 3.0, Ki_r = 0.0, Kd_r = 0.03;
-double Kp_p = 3.0, Ki_p = 0.0, Kd_p = 0.03;
-double Kp_y = 3.0, Ki_y = 0.0, Kd_y = 0.03;
+double Kp_r = 2.0, Ki_r = 0.01, Kd_r = 0.04;
+double Kp_p = 2.0, Ki_p = 0.01, Kd_p = 0.04;
+double Kp_y = 0.8, Ki_y = 0.01, Kd_y = 0.04;
 
 const double MAX_YAW_RATE = 150.0;
-const int IDLE_THRESH = 1030;//minimium motor thorttle threshold
+const int IDLE_THRESH = 1020;//minimium motor thorttle threshold
 const double MAX_ANGLE = 20.0;  // deg (start small)
 
 int m1,m2,m3,m4;//store the motors PWM values
 float pressure_bias;
 float Avg;
 // Create controllers
-PID rollPID (&rollInput,  &rollOut,  &rollSet,  Kp_r, Kp_r ? Ki_r : 0, Kd_r, DIRECT);
-PID pitchPID(&pitchInput, &pitchOut, &pitchSet, Kp_p, Kp_p ? Ki_p : 0, Kd_p, DIRECT);
+PID rollPID (&rollInput,  &rollOut,  &rollSet,  Kp_r, Kp_r ? Ki_r : 0, Kd_r, REVERSE);
+PID pitchPID(&pitchInput, &pitchOut, &pitchSet, Kp_p, Kp_p ? Ki_p : 0, Kd_p, REVERSE);
 PID yawPID  (&yawInput,   &yawOut,   &yawSet,   Kp_y, Kp_y ? Ki_y : 0, Kd_y, DIRECT);// Mixer limits (microseconds of correction added to throttle)
 const int MIX_LIMIT = 350;  // keep headroom so you don’t clip at 2000/1000
 unsigned long last_Time = 0;
@@ -58,7 +58,7 @@ void receive_the_data() {
     Telemetry t;
     t.roll  = (int16_t)(roll_Input * 10);
     t.pitch = (int16_t)(pitch_Input * 10);
-    t.yaw   = (int16_t)(yaw_Input   * 10);\
+    t.yaw   = (int16_t)(relative_yaw   * 10);
     t.M1 = (m1);
     t.M2 = (m2);
     t.M3 = (m3);
@@ -155,7 +155,7 @@ void loop() {
   // --- 3. Integrate Rate into Angle Setpoint (Yaw Angle Hold Logic) ---
   rollInput  = roll_Input;   // deg
   pitchInput = pitch_Input;  // deg
-  yawInput = yaw_Input;
+  yawInput = yaw_Input; // rate
 // Run PIDs (compute corrections in microseconds-worth of authority)
   rollPID.Compute();
   pitchPID.Compute();
@@ -169,34 +169,35 @@ void loop() {
     m3 = throttle;
     m4 = throttle;
   }else{
-    m1 = throttle + pitchOut + rollOut + yawOut;   // front-left
-    m2 = throttle + pitchOut - rollOut - yawOut;   // front-right
-    m3 = throttle - pitchOut - rollOut + yawOut;   // rear-right
-    m4 = throttle - pitchOut + rollOut - yawOut;   // rear-left
+    m1 = throttle - pitchOut - rollOut - yawOut;
+    
+    m2 = throttle - pitchOut + rollOut + yawOut;
+    
+    m3 = throttle + pitchOut + rollOut - yawOut;
+    
+    m4 = throttle + pitchOut - rollOut + yawOut;
   }
-
+  
 // Constrain to ESC range
   m1 = constrain(m1, 1000, 2000);
   m2 = constrain(m2, 1000, 2000);
   m3 = constrain(m3, 1000, 2000);
   m4 = constrain(m4, 1000, 2000);
   // drive servos with the mapped values
-  ChannelOne_One.writeMicroseconds(m1);
-  ChannelOne_Two.writeMicroseconds(m2);
-  ChannelThree_One.writeMicroseconds(m3);
-  ChannelFour_One.writeMicroseconds(m4);
+  ChannelOne_One.writeMicroseconds(m1);//2
+  ChannelOne_Two.writeMicroseconds(m2);//3
+  ChannelThree_One.writeMicroseconds(m3);//4
+  ChannelFour_One.writeMicroseconds(m4);//5
 
-  MS5611.read();
-  Serial.println(MS5611.getAltitude()-pressure_bias);
-/*
-  Serial.print("Ch1: ");
-  Serial.print(roll_Input);
-  Serial.print("   Ch2: ");
-  Serial.print(pitch_Input);
-  Serial.print("     Ch3: ");
+  Serial.print("yaw: ");
   Serial.print(yaw_Input);
-  Serial.print("        Ch4: ");
+  Serial.print(" Ch1: ");
+  Serial.print(m1);
+  Serial.print("  Ch2: ");
+  Serial.print(m2);
+  Serial.print("    Ch3: ");
+  Serial.print(m3);
+  Serial.print("      Ch4: ");
   Serial.println(m4);
-*/
 
 }
