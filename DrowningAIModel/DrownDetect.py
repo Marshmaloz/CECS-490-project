@@ -1,4 +1,4 @@
-import cvlib as cv
+from ultralytics import YOLO
 from cvlib.object_detection import draw_bbox
 import cv2
 import time
@@ -63,6 +63,7 @@ t0 = time.time() #gives time in seconds after 1970
 def detectDrowning(source):
     isDrowning = False
     fram=0
+
     #input from the camera
     if source.isdigit():
         cap = cv2.VideoCapture(int(source))  # for webcam input
@@ -74,12 +75,40 @@ def detectDrowning(source):
         print('Error while trying to read video')
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
-    while(cap.isOpened()):
+    
 
+    # Initialize YOLOv11 model
+    yolo_model = YOLO("yolo11n.pt")
+    
+    while(cap.isOpened()):
+        
         status, frame = cap.read()
+        
+        if not status:
+            break
 
         # apply object detection
-        bbox, label, conf = cv.detect_common_objects(frame)
+        # bbox, label, conf = cv.detect_common_objects(frame)
+        
+        # 1. Run detection looking ONLY for people (class 0)
+        results = yolo_model(frame, classes=[0], verbose=False)
+
+        # 2. Reset lists so we can fill them with new detections
+        bbox = []
+        label = []
+        conf = []
+
+        # 3. Process results to match the format the rest of your code expects
+        for r in results:
+            boxes = r.boxes
+            for box in boxes:
+                # Get the coordinates (x1, y1, x2, y2)
+                x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
+
+                # Add to the lists
+                bbox.append([int(x1), int(y1), int(x2), int(y2)])
+                label.append("person")
+                conf.append(float(box.conf[0]))
         
         # if only one person is detected, use model-based detection
         if len(bbox) == 1:
