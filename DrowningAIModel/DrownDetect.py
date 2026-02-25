@@ -49,14 +49,17 @@ class CustomCNN(nn.Module):
 
 print('Loading model and label binarizer...')
 lb = joblib.load('lb.pkl')
+num_classes = len(lb.classes_)
+
 model = CustomCNN()
-print('Model Loaded...')
 model.load_state_dict(torch.load('model.pth', map_location='cpu'))
 model.eval()
-print('Loaded model state_dict...')
+
+# Preprocessing: MUST match the training normalization
 aug = albumentations.Compose([
     albumentations.Resize(224, 224),
-    ])
+    albumentations.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+])
 
 t0 = time.time() #gives time in seconds after 1970
 
@@ -78,7 +81,7 @@ def detectDrowning(source):
     
 
     # Initialize YOLOv11 model
-    yolo_model = YOLO("yolo11n.pt")
+    yolo_model = YOLO("yolo11n.pt") #best.pt yolo11n.pt
     
     while(cap.isOpened()):
         
