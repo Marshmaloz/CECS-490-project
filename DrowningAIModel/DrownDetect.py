@@ -81,7 +81,7 @@ def detectDrowning(source):
     
 
     # Initialize YOLOv11 model
-    yolo_model = YOLO("yolo11n.pt") #best.pt yolo11n.pt
+    yolo_model = YOLO("yolo26n.pt") #best.pt yolo11n.pt
     
     while(cap.isOpened()):
         

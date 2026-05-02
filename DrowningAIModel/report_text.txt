@@ -1,0 +1,1059 @@
+ 
+ 
+ 
+ 
+ 
+  CECS -490 B: Lifesavers  
+Page 2 of 35 Contents  
+ 
+Contents  ................................ ................................ ................................ ................................ ................................ .... 2 
+List of Figures  ................................ ................................ ................................ ................................ .........................  3 
+Executive Summary ................................ ................................ ................................ ................................ ..............  7 
+Team members  ................................ ................................ ................................ ................................ ......................  9 
+Team Roles and Responsibilities  ................................ ................................ ................................ .................  12 
+Project Details and Technical Data  ................................ ................................ ................................ ..............  13 
+Logic and Operational Flow  ................................ ................................ ................................ ..................  18 
+Test  ................................ ................................ ................................ ................................ ................................ ..........  21 
+Demonstrations  ................................ ................................ ................................ ................................ ..................  23 
+Bill of Materials  ................................ ................................ ................................ ................................ ...................  25 
+Cost  ................................ ................................ ................................ ................................ ................................ ..........  26 
+Schedule  ................................ ................................ ................................ ................................ ................................ . 27 
+Significant Challenges and Solutions  ................................ ................................ ................................ ..........  29 
+Stretch Goals  ................................ ................................ ................................ ................................ ........................  30 
+Project Follow on  ................................ ................................ ................................ ................................ ...............  30 
+Intellectual Property  ................................ ................................ ................................ ................................ .........  31 
+Tools and Methodologies  ................................ ................................ ................................ ................................  32 
+Ethics ................................ ................................ ................................ ................................ ................................ ....... 33 
+Appendix:  ................................ ................................ ................................ ................................ ..............................  35 
+ 
+ 
+ CECS -490 B: Lifesavers  
+Page 3 of 35 List of Figures  
+ 
+Figure 1. High -Level System Block Diagram  
+High -level architecture of the Ocean Watchdogs system showing integration between the 
+drone platform, Pixhawk flight controller, Raspberry Pi companion computer, camera 
+subsystem, payload release mechanism, and ground station. Dual communication channels 
+are illustrated, with RC used for flight control and Wi -Fi used for video streaming and 
+telemetry, providing redundancy and operational reliability.  
+ 
+ 
+ 
+Figure 2. Drone Subsystem Architecture  
+CECS -490 B: Lifesavers  
+Page 4 of 35 Internal drone subsystem layout highlighting power distribution from the Li -Po battery 
+through the ESC/PDB to the motors, flight control via the Pixhawk, onboard processing 
+through the Raspberry Pi, camera input for computer vision, and servo -based payload  
+deployment. This diagram illustrates how propulsion, sensing, computation, and actuation 
+are integrated into a single aerial platform.  
+ 
+ 
+Figure 3. Computer Vision and Automation Flow  
+Flow diagram of the computer vision pipeline, showing camera input processed by the 
+Raspberry Pi using OpenCV, followed by detection logic and decision -making. Detection 
+results are transmitted to the ground station for visualization and may trigger automa ted 
+responses such as tracking or payload deployment.  
+ 
+ 
+Figure 4. Clamshell Payload Release Mechanism  
+CECS -490 B: Lifesavers  
+Page 5 of 35 Mechanical layout of the clamshell -style payload release system showing servo actuation, 
+release pin, mounting geometry, and flotation device attachment. The mechanism enables 
+controlled deployment of the life preserver while minimizing impact on drone sta bility and 
+overall payload weight.  
+ 
+ 
+Figure 5. Life Vest Payload Integration and Deployment Layout  
+Dimensional layout of the life vest payload mounted beneath the drone frame, illustrating 
+storage configuration prior to release and deployment clearance after activation. This 
+figure demonstrates payload integration, spatial constraints, and release geome try used 
+during flotation delivery.  
+ 
+ 
+CECS -490 B: Lifesavers  
+Page 6 of 35  
+Figure 6. Live FPV Video and Telemetry Display  
+Real -time first -person -view (FPV) camera feed from the onboard Raspberry Pi showing 
+integrated telemetry data including signal strength, orientation, altitude, and system status. 
+This display validates wireless video transmission and flight -controller comm unication 
+during ground and flight testing.  
+ 
+ 
+ 
+Figure 7. Ground Control Interface and RC Integration  
+CECS -490 B: Lifesavers  
+Page 7 of 35 Bench -testing setup showing the RadioLink T12D transmitter communicating with the 
+Pixhawk flight controller while system parameters are monitored on the ground station. 
+This configuration verifies manual control, RF communication, and integration between t he 
+RC transmitter and onboard flight electronics.  
+ 
+ 
+ 
+Figure 8. Ocean Watchdogs Drone Prototype Assembly  
+Fully assembled Ocean Watchdogs drone prototype featuring four brushless motors, 
+Pixhawk flight controller, Raspberry Pi companion computer, optical camera module, GPS 
+antenna, and power distribution system. This configuration represents the current 
+hardwa re platform used for flight testing, video streaming, and computer vision 
+development. Currently still putting together a second level for the drone chassis until final 
+parts arrive.  
+ 
+Executive Summary  
+Project Overview  
+Ocean Watchdogs is a drone -based ocean rescue system designed to reduce response 
+time in drowning emergencies by combining aerial mobility, computer vision, and 
+automated payload deployment. Drowning remains one of the leading causes of 
+accidental death wo rldwide, and traditional lifeguard response is often limited by 
+distance, visibility, and human availability. Ocean Watchdogs addresses these challenges 
+by providing a rapid first -response platform capable of detecting swimmers in distress 
+and delivering a  flotation device while maintaining continuous communication with 
+operators on the ground.  
+ 
+System Operation  
+The system supports two primary modes of operation:  
+CECS -490 B: Lifesavers  
+Page 8 of 35 • Manual Mode with Computer Vision Assistance  
+An operator pilots the drone while receiving real -time video, telemetry, and AI -
+based detection feedback.  
+• Fully Autonomous Mode  
+The drone independently scans the environment, identifies potential swimmers in 
+distress, and initiates rescue actions with minimal human intervention.  
+Once a target is detected, the drone deploys a life preserver from low altitude and 
+continues tracking the individual while transmitting GPS location, video, and system 
+status to the ground station until human responders arrive.  
+ 
+Technical Architecture  
+Ocean Watchdogs integrates multiple subsystems into a unified aerial platform:  
+• Flight Control:  Pixhawk flight controller for stabilization and navigation  
+• Onboard Computing:  Raspberry Pi companion computer running OpenCV for 
+computer vision  
+• Imaging:  Optical camera providing real -time FPV video  
+• Communication:  Dual -channel architecture using RC for flight control and Wi -Fi 
+for video and telemetry  
+• Power System:  High -capacity Li -Po battery distributed through ESC/PDB to 
+motors and electronics  
+• Payload Deployment:  Servo -based release mechanism for flotation device 
+delivery  
+This dual -channel communication design improves system robustness by preventing 
+total loss of control in the event of a single communication failure.  
+ 
+Key Features  
+• Real -time FPV video streaming to ground station  
+• AI-assisted swimmer detection  
+• GPS -based tracking and telemetry feedback  
+• Redundant communication links (RC + Wi -Fi) 
+• Servo -controlled life preserver deployment  
+• Continuous monitoring after payload release  
+Together, these features enable rapid situational awareness, precise deployment, and 
+sustained tracking in dynamic outdoor environments.  
+ 
+Project Motivation and Impact  
+Our team selected this project because it combines complex embedded systems 
+engineering with meaningful real -world impact. Ocean Watchdogs challenges us to 
+integrate hardware, software, networking, and artificial intelligence into a safety -critical 
+applica tion while addressing constraints such as weight, power consumption, 
+environmental exposure, and regulatory compliance.  
+Through this project, we aim to demonstrate a scalable rescue platform that extends the 
+reach of lifeguards and strengthens coastal safety infrastructure. We are excited to CECS -490 B: Lifesavers  
+Page 9 of 35 showcase a working prototype highlighting autonomous flight, payload deployment, and 
+computer -vision -driven automation during our semester demonstrations.  
+ 
+Team members  
+ 
+ 
+Josh Fernandez - Spring 2026  
+Josh is a senior majoring in Computer engineering and has a strong interest in embedded 
+systems, digital logic, and hardware design.  His academic background includes coursework 
+in digital logic I, II, and digital design technique and verification. Classes  also include 
+Embedded systems I -III, giving a strong foundation in digital logic and hardware design.  
+Along with a strong hardware design, he has been a lead in a software engineering 
+program. Being the scrum master of the project, he developed the main foundation of the 
+code and communicated with all teammates to keep everyone on track for the project. His 
+experiences give him a strong foundation for software development cycles with proper test 
+case modules.  
+ 
+| Phone: (310) 714 -6243 | Personal Email: jcf3rnand3z@gmail.com  | 
+ 
+CECS -490 B: Lifesavers  
+Page 10 of 35  
+ 
+Anastacia Estrella – Spring 2026  
+Anastacia Estrella is a senior at California State University, Long Beach, pursuing a 
+bachelor's in computer engineering. Through her coursework, she has developed strong 
+skills in hardware, software, and project management —gaining experience in leading 
+technical projects and collaborating in teams. Alongside her studies, she has worked for 
+over three years as a Professional Body Piercer at Mr. Inkwell’s Classy Tattoos, where she 
+manages operations, oversees apprentices, coordinates with vendors, and ensure s 
+compliance with health regulations. These combined experiences have strengthened her 
+leadership, organization, and client relationship skills, reflected in consistent revenue 
+growth and over 300 five -star reviews  
+ 
+| Phone: (562) 702 -5171 | Personal Email: asia.estrella.3@gmail.com  | 
+ 
+ 
+ 
+CECS -490 B: Lifesavers  
+Page 11 of 35 Brandon Jamjampour – Spring 2026  
+Brandon Jamjampour is a Senior Computer Engineering student at California State 
+University, Long Beach, with hands -on experience in embedded systems, hardware design, 
+and real -time control. As a SPHERE Cyber Physical Systems intern at USC’s Information 
+Sciences Institute, he developed embedded control systems with PLCs, integrated sensors 
+and actuators, and worked with industrial HMI interfaces. He has also built hardware -
+driven projects such as a custom Space Invaders game engine and has practical experien ce 
+with Arduino and ESP32  microcontrollers. With strong skills in circuit design, debugging, 
+and system integration, Brandon is well -prepared to be working as the Hardware Lead.  
+ 
+| Phone: (562) 505 -4864 | Personal Email: jamb98080@gmail.com  | 
+ 
+ 
+ 
+Kyle Nguyen – Spring 2026  
+Kyle Nguyen is a Computer Engineering major with a strong focus on embedded systems 
+and hardware design. He gained hands -on experience as a Test Engineering Intern, where 
+he developed skills in system verification, troubleshooting, and performance analysis . With 
+a solid background in circuit design and a passion for integrating hardware and software, 
+Kyle brings both technical depth and practical problem -solving to engineering projects.  
+| Phone: (714) 889 -0082 | Personal Email: kylepnguyen377@gmail.com  | 
+ 
+CECS -490 B: Lifesavers  
+Page 12 of 35  
+ 
+Kenneth Vuong – Spring 2026  
+ 
+Kenneth Vuong is a Computer Engineering student at California State University, Long 
+Beach, minoring in Computer Science. He has two years of experience in circuit board 
+production and testing and has developed projects with ARM microcontrollers and FPGA 
+boards, including Bluetooth -controlled RC cars, sensor -based systems, LCD displays, and 
+communication interfaces such as UART, SSI, I²C, and Wi -Fi. Skilled in C, C++, Verilog, 
+Python, and Java, Kenneth has built numerous side projects ranging from Windows G DI 
+applications and file parsing/creation tools to custom number system converters and 
+games like Snake, Wordle, Hangman, and Blackjack.  
+ 
+| Phone Number: (714) 717 -7059 | Personal Email: kennethvuong794@gmail.com  | 
+ 
+Team Roles and Responsibilities  
+The Ocean Watchdogs project is developed by Team Lifesavers , composed of five 
+computer engineering students. Each member contributes expertise in hardware, 
+software, embedded systems, and project management to ensure successful development 
+of the drone -based rescue system.  
+ 
+Anastacia Estrella – Project Manager  
+Responsible for coordinating project timelines, organizing meetings, and ensuring 
+deliverables meet course milestones. Oversees documentation, presentation preparation, 
+and cross -team communication. Also assists with system integration and project 
+planning . 
+ 
+Kenneth Vuong – Software Lead  
+CECS -490 B: Lifesavers  
+Page 13 of 35 Responsible for software architecture and embedded programming. Develops 
+communication interfaces between the Raspberry Pi and Pixhawk flight controller and 
+assists with integration of computer vision and telemetry systems.  
+ 
+Brandon Jamjampour – Hardware Lead  
+Responsible for drone hardware integration including power distribution, flight 
+controller setup, motor/ESC configuration, and system wiring. Overse es electrical 
+debugging and hardware reliability.  
+ 
+Josh Fernandez – Software Co -Lead & Testing  
+Supports the development of the computer vision pipeline and system automation logic. 
+Responsible for software debugging, integration testing, and assisting with flight control 
+software configuration.  
+ 
+Kyle Nguyen – Hardware Co -Lead & Testing  
+Assists with mechanical integration, payload mounting, and prototype testing. Conducts 
+system verification including flight testing, hardware validation, and troubleshooting.  
+ 
+Project Details  and Technical Data  
+Objectives  
+The goal of the Ocean Watchdogs project is to develop a  drone -based ocean rescue 
+platform  capable of quickly locating swimmers in distress and delivering flotation support 
+while transmitting real -time information to lifeguards.  
+ 
+The project integrates embedded systems, autonomous flight, computer vision, and 
+wireless communication  into a single aerial rescue platform.   
+ 
+Benefits to End Users  
+• Faster response to drowning emergencies  
+• Ability to search large areas quickly  
+• Real -time video visibility for lifeguards  
+• Rapid deployment of flotation devices  
+• Reduced risk to human rescuers  
+ 
+Product Features  
+• Autonomous or manual drone flight  
+• Real -time FPV video streaming  
+• AI-assisted swimmer detection  
+• GPS telemetry and tracking  
+• Servo -controlled life preserver deployment  
+• Dual communication links for reliability  
+ 
+Design  
+ CECS -490 B: Lifesavers  
+Page 14 of 35 System Block Diagram  
+ 
+ 
+ 
+The Ocean Watchdogs system consists of several integrated subsystems. The high -level 
+architecture diagram  shows the interaction between major components including the 
+camera, Raspberry Pi companion computer, Pixhawk flight controller, payload release 
+mechanism, and ground station interface.  
+ 
+Block Descriptions  
+ 
+Drone Platform  
+The drone platform provides the mechanical structure and propulsion system required for 
+flight. It consists of six brushless motors, ESC controllers, a Li -Po battery, and a carbon fiber 
+frame. These components enable stable aerial maneuverability while carrying additional 
+computing hardware and payload systems.  
+ 
+Flight Control System  
+A Pixhawk flight controller is responsible for drone stabilization, navigation, and control 
+logic. The controller processes sensor data from gyroscopes, accelerometers, and GPS 
+modules to maintain stable flight.  
+ 
+Computer Vision  
+A Raspberry Pi 5 will be used to tap into the Rasberry Pi 4 video streaming allowing us to 
+run inferencing on the video and determine whether a person is drowning or in distress. 
+The RPI 5 will have access to all telemetry  data from the Pixhawk and communicate  
+wirelessly  through  the bidirectional communication  link to the Pixhawk 6C. If in auto mode, 
+the RPI 5 will cha nge the flight mode to  guide  and update it with GPS waypoints towards 
+the person.  
+ 
+Long Range FPV and Telemetry System  
+Two  Raspberry Pi  4B serves as the Air and Ground units allowing for 1080 30fps video 
+stream directly to the ground station but also allows for bidirectional communication on 
+the same pipe using Mavlink 2 communication. This allows us to receive telemetry  
+CECS -490 B: Lifesavers  
+Page 15 of 35 communication , information  about what mode the drone is  in, and allows an ethernet 
+connection to a laptop running Q GroundControl. Allow us to update the Pixhawk wirelessly 
+and send survey GPS missions.  
+ 
+Communication System  
+Ocean Watchdogs uses a dual communication architecture:  
+• RC radio control for manual flight control  
+• Wi -Fi communication for telemetry and video streaming  
+This redundancy ensures that  the system remains operational even if one communication 
+channel experiences interference.  
+ 
+Payload Deployment System  
+A servo -controlled mechanical release mechanism allows the drone to deploy a life 
+preserver to swimmers in distress. The mechanism is mounted beneath the drone frame 
+and can be activated remotely or automatically.  
+ 
+Ground Station  
+The ground station consists of a laptop , Raspberry Pi  4B, and a RTK GPS base antenna  
+system running ground control software that receives video streams, telemetry data, and 
+detection alerts.  
+ 
+Mechanical Design – Payload Deployment System  
+The payload deployment mechanism was designed using computer -aided design (CAD) 
+software to ensure proper mechanical integration with the drone frame. The design focuses 
+on maintaining a lightweight structure while providing a reliable release system capab le of 
+deploying a flotation device during rescue operations.  
+The mechanism includes a protective housing, clamp components to hold the payload 
+securely, and a rotational release plate that allows controlled deployment when activated 
+by a servo motor.  
+ 
+Figure 9. Payload Housing CAD Model  
+ 
+ 
+CECS -490 B: Lifesavers  
+Page 16 of 35 This CAD model shows the protective enclosure designed to house the payload deployment 
+mechanism. The enclosure provides structural support for the release system while 
+protecting internal components during drone flight.  
+ 
+Figure 10. Clamp Mechanism for Payload Retention  
+ 
+ 
+ 
+The semicircular clamp component is designed to hold the flotation device securely during 
+flight. The two clamp halves connect to form a circular structure that surrounds the 
+payload and prevents movement until release is triggered.  
+ 
+Figure 11. Lightweight Release Plate Design  
+ 
+ 
+ 
+The circular plate shown above is designed with curved slots that reduce overall weight 
+while maintaining structural strength. This plate supports the payload while allowing the 
+release mechanism to rotate freely during deployment.  
+ 
+Figure 12. Rotational Release Disk  
+CECS -490 B: Lifesavers  
+Page 17 of 35  
+ 
+The rotational release disk allows controlled payload deployment when actuated by the 
+servo motor. The patterned slot geometry enables smooth rotation and ensures reliable 
+separation of the flotation device from the drone platform.  
+ 
+Figure 13. Servo Mount  
+ 
+ 
+A mounting bracket was designed to securely hold the servo motor used to control the 
+payload release mechanism. The mount locks the servo in place to prevent vibration and 
+unwanted movement during drone flight.  
+ 
+Performance Requirements  
+The payload deployment mechanism must meet several performance requirements to 
+ensure safe and reliable operation during rescue scenarios:  
+• The system must securely hold the flotation device during flight.  
+• The mechanism must release the payload on command without interfering with 
+drone stability.  
+• The mechanical components must remain lightweight to minimize impact on drone 
+CECS -490 B: Lifesavers  
+Page 18 of 35 flight time.  
+• The release system must function reliably in outdoor environments including wind 
+and vibration.   
+ 
+Logic and Operational Flow  
+The Ocean Watchdogs system operates in two primary modes: manual operator -assisted 
+flight and autonomous mission mode. The system initializes by loading sensors and 
+communication modules before transitioning into either manual control or autonomous 
+waypoin t navigation.  
+ 
+Figure 14. Operational flow diagram showing manual flight control, autonomous 
+mission execution, computer vision detection, and payload deployment.  
+The diagram illustrates how the drone transitions between manual flight and autonomous 
+operation while continuously analyzing video frames for drowning detection. When a 
+drowning event is detected, the system switches to guided mode to approach the target and 
+deploy the flotation device.  
+Power System  
+The drone is powered using a 22AH 6S 22.2v high -capacity lithium -polymer battery pack . 
+Power is distributed through a power distribution board to supply the motors, flight 
+controller, Raspberry Pi, camera, and payload system.  
+ 
+Voltage Requirements  
+• Motors: 5008 Mad FE 340kv 22.2 6S  Li-Po supply  
+• Pixhawk 4B Air and Ground : regulated Bec 5V 
+CECS -490 B: Lifesavers  
+Page 19 of 35 • Flight Controller: regulated Bec 5V  
+• Camera and peripherals: 5V  
+• Gimbal 3 -4S Li Po power  
+ 
+Power Considerations  
+The power budget must account for motor current draw, onboard computing 
+requirements, and communication systems. Careful power distribution ensures stable 
+operation without overloading the battery.  
+ 
+Flight Software  
+The drone flight system is controlled by a Pixhawk flight controller running the ArduPilot 
+flight stack . ArduPilot provides stabilization, waypoint navigation, and manual control 
+capabilities. Through this system, the drone can be operated using a radio controller or 
+follow predefined waypoint missions configured through the ground control interface.  
+ 
+The flight controller processes data from onboard sensors including the inertial 
+measurement unit (IMU) and GPS module to maintain stable flight and accurate navigation 
+during operation.  
+ 
+Computer Vision Software  
+The onboard Raspberry Pi 5  runs a dual -stage computer vision pipeline designed to 
+perform real -time drowning detection while maintaining efficient performance on 
+embedded hardware.  
+ 
+1. Neural Network Architecture (train.py)  
+ 
+ 
+Figure 15. Custom convolutional neural network architecture used for drowning 
+CECS -490 B: Lifesavers  
+Page 20 of 35 classification.  
+ 
+This snippet defines the core CNN used for drowning classification. The architecture 
+consists of four convolutional layers that extract spatial features from detected persons. 
+These features are progressively reduced using pooling layers before passing thr ough fully 
+connected layers. Global adaptive pooling is used to compress the feature maps into a 
+single classification vector that determines whether the detected individual is swimming 
+normally or exhibiting drowning behavior.  
+ 
+2. Dual -Stage Detection Pipeline (DrownDetect.py)  
+ 
+ 
+Figure 16. Dual -stage drowning detection pipeline integrating YOLOv11 and a 
+custom CNN classifier.  
+ 
+The drowning detection system uses a two -stage detection pipeline. In the first stage, a 
+YOLOv11 object detection model identifies human figures within the camera frame. 
+Detected individuals are then passed into the custom CNN classifier, which determines 
+whether the detected subject is swimming normally or showing drowning behavior.  
+The software also implements additional logic to analyze scenarios where multiple people 
+are detected. In these cases, the system calculates the distance between detection 
+centroids. If the distance between individuals falls below a defined threshold, the system 
+triggers a precautionary drowning alert to account for potential occlusion or multi -person 
+distress situations.  
+ 
+Communication Software  
+Video streaming and telemetry data are transmitted using a high -performance 
+communication architecture designed for low -latency feedback between the drone and the 
+ground station.  
+ 
+OpenHD Video Transmission  
+The system uses OpenHD , an open -source digital video transmission system designed for 
+CECS -490 B: Lifesavers  
+Page 21 of 35 drone communication. OpenHD enables high -definition video streaming with extremely 
+low latency by transmitting raw Wi -Fi frames using packet injection techniques, which 
+bypass the overhead of traditional TCP/IP networking.  
+ 
+5 GHz Wi -Fi Communication  
+The Raspberry Pi 5 communicates using the 5 GHz Wi -Fi band (802.11ac) . Operating on 
+the 5 GHz band reduces interference commonly found in the 2.4 GHz spectrum and 
+provides the higher bandwidth necessary for stable video transmission and telemetry.  
+ 
+Low -Latency Transmission  
+Through optimized network configuration and reduced protocol overhead, the system 
+achieves video transmission latency of approximately 100 milliseconds or less . This 
+ensures that operators viewing the ground station display receive near real -time video and 
+detection information.  
+ 
+Automation Logic  
+The Ocean Watchdogs system includes an automation layer that allows computer vision 
+detection results to trigger system responses.  
+ 
+Detection Event Handling  
+When the CNN classifier determines that a detected subject is drowning ( isDrowning == 
+True ), the software sends a serial command  to the onboard control system.  
+ 
+System Response Integration  
+This modular automation design allows detection events to trigger additional actions such 
+as alert notifications, MAVLink control commands, or payload deployment. The system 
+architecture allows future expansion where the drone could automatically track det ected 
+individuals or deploy flotation devices in response to confirmed drowning events.  
+ 
+Test  
+Verification  
+To verify the functionality of the Ocean Watchdogs system, multiple subsystem tests were 
+conducted throughout the development process. These tests included hardware integration 
+testing, communication verification, flight validation, and payload mechanism t esting. Each 
+subsystem was tested individually before full system integration to ensure reliable 
+performance and to isolate potential faults.  
+Testing Procedures  
+Several testing procedures were performed to validate the operation of the drone platform 
+and supporting systems.  
+ 
+1. Flight Testing  
+Multiple outdoor test flights were conducted to verify manual flight control and waypoint -
+based autonomous flight modes. The drone was tested for stable takeoff, hover, directional 
+movement, and landing. Autonomous waypoint missions were also executed to e nsure the CECS -490 B: Lifesavers  
+Page 22 of 35 Pixhawk flight controller correctly followed programmed flight paths.  
+ 
+2. Landing Gear Control Testing  
+The landing gear control system was tested indoors using a transmitter connected to the 
+drone’s receiver. A multimeter was connected to the landing gear controller output to 
+verify voltage levels and ensure that correct control signals were being transmitt ed when 
+the landing gear was activated.  
+ 
+3. Motor Power and Current Testing  
+Bench tests were performed to measure motor current draw at various throttle levels. The 
+motors  gradually increased from low throttle to higher throttle percentages while 
+monitoring current consumption. This test ensured that the power distribution system and 
+electronic speed controllers could support  the required motor loads.  
+ 
+4. Communication System Testing  
+Communication between the RC transmitter and the Pixhawk flight controller was verified 
+through ground tests and flight tests. These tests ensured reliable command transmission 
+and proper response of the drone’s flight control system.  
+ 
+5. Video Transmission and Computer Vision Testing  
+The Raspberry Pi companion computer and onboard camera were tested to verify real -time 
+video transmission between the drone and the ground station. Simulated swimmer 
+scenarios were used to test the computer vision detection pipeline and confirm that the 
+system could process camera input and provide detection feedback.  
+ 
+These testing procedures ensured that each subsystem functioned correctly before 
+integration into the full rescue platform.  
+ 
+Tolerance Analysis  
+One of the most critical subsystems in the Ocean Watchdogs project is the long -range video 
+transmission system. This system is responsible not only for streaming live video from the 
+drone to the ground station but also for transmitting telemetry data and m aintaining a 
+bidirectional communication pipeline between the drone and ground station.  
+Initial testing of the video transmission system was conducted at distances of 
+approximately 50 feet using a 5.745 GHz frequency band. During these tests, significant 
+packet loss and unstable video transmission were observed. This instability was attribute d 
+to antenna mismatch and suboptimal frequency usage for the hardware being used.  
+To improve system performance, the communication system was modified by replacing the 
+existing antennas with Maple Leaf 3 dBi antennas tuned specifically for the 5.2 GHz – 5.3 
+GHz frequency range. This frequency band aligns better with the operating charac teristics 
+of the Asus USB -AC56 AC1300 Wi -Fi adapters used in the OpenHD communication system.  
+After implementing this change, additional range tests were conducted. The system 
+demonstrated significantly improved performance, achieving stable video transmission at 
+distances approaching approximately 1 kilometer  with minimal packet loss. The improved 
+antenna tuning and frequency adjustment resulted in a cleaner video feed and more 
+reliable telemetry communication.  CECS -490 B: Lifesavers  
+Page 23 of 35  
+This tolerance analysis demonstrated that proper antenna selection and frequency 
+optimization are critical for maintaining stable long -range video transmission in the Ocean 
+Watchdogs system.  
+  
+Demonstrations  
+Demo 1 – Drone Flying with Camera  
+ 
+What was planned  
+The first demonstration focused on validating the drone’s basic flight capability and video 
+transmission system. The goal was to demonstrate stable manual flight while streaming 
+real -time video and telemetry data to the ground station.  
+ 
+The drone was expected to take off, hover, maneuver in multiple directions, and land safely 
+while transmitting live FPV video from the onboard camera.  
+ 
+Measurable outcomes  
+The success of the demonstration was evaluated using the following criteria:  
+• Stable drone takeoff and landing  
+• Controlled hover for several seconds  
+• Successful directional movement (forward, backward, left, right)  
+• Continuous real -time FPV video feed to the ground station  
+• Telemetry data displayed including orientation, altitude, and battery information  
+• Reliable RC communication with no major signal loss  
+ 
+Demo results  
+Demo 1 was successfully completed. The drone was able to take off, hover, maneuver, and 
+land safely while transmitting live video and telemetry data to the ground station.  
+ 
+The Pixhawk flight controller provided stable flight control and responded correctly to 
+commands from the RC transmitter. The Raspberry Pi successfully transmitted video to the 
+ground station using the wireless communication system.  
+ 
+Minor adjustments were required to improve signal strength and antenna placement, but 
+overall,  the demonstration showed positive results and confirmed that the core flight and 
+communication systems are functioning properly.  
+ 
+Demo 2 – Life Preserver Drop Mechanism  
+ 
+What was planned  
+The second demonstration will validate the payload deployment mechanism used to 
+deliver a flotation device to a swimmer in distress. The drone will carry a life preserver 
+attached to a servo -controlled release mechanism mounted beneath the drone frame.  
+During the demonstration, the drone will drop the payload when the operator activates the CECS -490 B: Lifesavers  
+Page 24 of 35 payload release mechanism.  
+ 
+Measurable outcomes  
+The following metrics will be used to evaluate the success of the demonstration:  
+• Payload releases when the command signal is sent  
+• Servo mechanism activates reliably  
+• Drone remains stable during and after the release  
+• Payload lands within the intended drop zone  
+• The payload mechanism does not interfere with drone flight performance  
+ 
+Expected outcome  
+This demonstration will confirm that the mechanical payload deployment system can 
+deliver a flotation device safely and reliably while maintaining flight stability.  
+ 
+Demo 3 – Computer Vision with Automation  
+ 
+What was planned  
+The third demonstration will validate the computer vision subsystem responsible for 
+detecting swimmers in distress. The onboard camera will capture video that is processed 
+by the Raspberry Pi using computer vision algorithms.  
+The system will analyze the video feed to identify human subjects and highlight detected 
+targets on the ground station display.  
+ 
+Measurable outcomes  
+The success of the demonstration will be evaluated using the following criteria:  
+• Human subject detected within the camera field of view  
+• Detection results displayed on the video feed with visual indicators  
+• Detection data transmitted to the ground station  
+• Real -time processing performance with minimal delay  
+• System stability while running detection and video streaming simultaneously  
+ 
+Expected outcome  
+This demonstration will verify that the computer vision system can successfully detect 
+potential swimmers in distress and provide detection feedback to the ground station.  
+ 
+Final Demo  
+The final demonstration will integrate all subsystems of the Ocean Watchdogs platform 
+into a complete rescue scenario.  
+ 
+Demonstration sequence  
+1. Drone takeoff and stabilization  
+2. Real -time FPV video streaming to the ground station  
+3. Computer vision system scans for simulated swimmer  
+4. Detection alert generated on ground station  
+5. Drone approaches target location  
+6. Payload release mechanism deploys flotation device  CECS -490 B: Lifesavers  
+Page 25 of 35 7. Drone continues transmitting video and telemetry  
+8. Drone returns and lands safely  
+ 
+Expected measurable outcomes  
+The system will be considered fully functional if the following conditions are met:  
+• Drone maintains stable flight throughout the demonstration  
+• Continuous video and telemetry transmission during operation  
+• Computer vision system detects the simulated swimmer  
+• Payload deployment mechanism releases the flotation device successfully  
+• Drone remains stable after payload deployment  
+• Ground station receives accurate telemetry and video data  
+ 
+Successful completion of the final demonstration will validate Ocean Watchdogs as a 
+working prototype capable of assisting lifeguards by rapidly delivering flotation support to 
+swimmers in distress.  
+Bill of Materials  
+The Ocean Watchdogs system consists of several hardware and computing components 
+used to support drone flight, computer vision processing, communication, and payload 
+deployment. The table below summarizes the major components used in the system.  
+ 
+Part Name  Component 
+Type  Where Used  Qty Vendor / 
+Source  Estimated 
+Cost  
+Pixhawk 6C Flight 
+Controller  Flight Control  Drone Navigation 
+System  1 Holybro  $200  
+M9N GPS Module  Navigation  Drone 
+Positioning  1 Holybro  $80 
+Drone Transmitter  Communication  Manual Flight 
+Control  1 RadioMaster  $80 
+ExpressLRS 
+Receiver  Communication  Drone RC 
+Receiver  1 RadioMaster  $96 
+Brushless Drone 
+Motors  Propulsion  Drone Frame  4 Generic FPV 
+Supplier  $60 
+Drone Frame (Tarot 
+Chassis)  Structural  Drone Platform  1 Tarot  $260  
+340KV Brushless 
+Motors  Propulsion  Final Drone 
+Platform  6 FPV Supplier  $528  
+Drone Battery (Li -
+Po) Power  Drone Power 
+System  1 Hobby Supplier  $300  
+Electronic Speed 
+Controllers (ESC)  Motor Control  Motor Power 
+Regulation  1 
+set Hobby Supplier  $130  
+Propellers  Propulsion  Drone Motors  Set Hobby Supplier  $150  
+Raspberry Pi 5  Computing  Computer Vision 2 Raspberry Pi $170  CECS -490 B: Lifesavers  
+Page 26 of 35 Part Name  Component 
+Type  Where Used  Qty Vendor / 
+Source  Estimated 
+Cost  
+Processing  Foundation  
+Raspberry Pi 4 
+(8GB)  Computing  Companion 
+Computer  1 Raspberry Pi 
+Foundation  $85 
+Raspberry Pi 4 
+(4GB)  Computing  Video Processing  1 Raspberry Pi 
+Foundation  $65 
+Raspberry Pi 
+Camera  Imaging  Computer Vision 
+Input  1 Raspberry Pi 
+Foundation  $25 
+Micro SD Cards 
+(32GB)  Storage  Raspberry Pi 
+Systems  2 Amazon  $30 
+SD Card Adapters  Accessories  Storage Interface  1 Amazon  $30 
+Micro HDMI Cable  Accessories  Display / 
+Debugging  1 Amazon  $6.78  
+Ethernet Cables  Networking  Ground Station 
+Setup  2 Amazon  $12.11  
+Raspberry Pi Case  Accessories  Computing 
+Protection  1 Amazon  $14 
+3D Printed Parts  Mechanical  Payload Mounts 
+/ Custom Parts  — 3D Printer  $40 
+Miscellaneous 
+Components  Hardware  Wiring, 
+connectors, 
+mounts  — Various  $130  
+ 
+Estimated Total Parts Cost  
+Total estimated parts cost:  
+$2,591.89  
+ 
+ Cost   
+The total cost of the Ocean Watchdogs project includes both the hardware components 
+required to build the system and the engineering labor required to design, develop, and 
+test the platform.  
+Parts Cost  
+The estimated cost of all hardware components used in the project is approximately:  
+Total Parts Cost = $2,591.89  
+These costs include drone components, computing hardware, communication systems, 
+sensors, and mechanical components used in the prototype.  
+ CECS -490 B: Lifesavers  
+Page 27 of 35 Labor Cost  
+To estimate labor cost, each team member's time is calculated using the following formula 
+required by the project guidelines:  
+Labor Cost = Hourly Salary × 2.5 × Hours Worked  
+Assuming a starting engineering salary equivalent of $40/hour  and an estimated 120 
+hours of work per team member , the labor cost is calculated as follows.  
+Labor per person:  
+$40 × 2.5 × 120 = $12,000  
+There are five team members in the project.  
+Total Labor Cost:  
+5 × $12,000 = $60,000  
+ 
+Total Project Cost  
+Category  Cost  
+Parts  $2,591.89  
+Labor  $60,000  
+Grand Total Project Cost = $62,591.89  
+ 
+This cost estimate reflects the prototype development cost of the Ocean Watchdogs 
+system. In a commercial production environment, costs could be reduced through bulk 
+manufacturing, optimized component selection, and streamlined system integration.  
+Schedule  
+Planned  
+At the beginning of the project, the team created a development timeline to organize the 
+design, implementation, and testing phases of the Ocean Watchdogs system. The schedule 
+divided the project into several major stages including project planning, hardwa re design, 
+manual flight development, computer vision implementation, system integration, and final 
+testing.  
+ 
+The planned schedule began with project planning and proposal development during the CECS -490 B: Lifesavers  
+Page 28 of 35 early weeks of the semester. After the project scope was defined, the team moved into the 
+design and procurement phase where drone components, computing hardware, and 
+mechanical parts were selected and ordered.  
+ 
+Following hardware procurement, the next phase focused on developing manual drone 
+flight capability. During this stage the drone platform was assembled, the Pixhawk flight 
+controller was configured, and initial flight testing was performed to ensure stable  
+operation.  
+ 
+The next stage of the schedule involved implementing the computer vision system using 
+the onboard Raspberry Pi and camera module. This included establishing the Wi -Fi video 
+pipeline and developing the detection algorithms used to identify swimmers in distr ess. 
+ 
+After the individual subsystems were completed, the plan was to integrate the computer 
+vision system with the manual flight system. This integration allows the drone to provide 
+visual detection assistance while being piloted manually.  
+ 
+Later phases of the project timeline include development of a fully autonomous mode, 
+followed by system testing and validation. The final stage of the project is the 
+demonstration and presentation of the completed Ocean Watchdogs prototype at the 
+Senior De sign Expo.  
+ 
+ 
+ 
+Actual  
+At the time of this report, the project has progressed through several of the planned 
+development stages. The planning and proposal phase was completed successfully, and the 
+team finalized the system architecture and project goals.  
+ 
+Most of the required hardware components have been acquired, including the drone frame, 
+motors, Pixhawk flight controller, Raspberry Pi companion computer, camera module, and 
+communication equipment. The drone platform has been assembled and the core fligh t 
+CECS -490 B: Lifesavers  
+Page 29 of 35 control system has been configured.  
+ 
+The team has successfully demonstrated manual drone flight with live video 
+transmission , confirming proper operation of the flight controller, propulsion system, and 
+communication links between the drone and the ground station.  
+ 
+Development of the computer vision system is currently underway, including configuring 
+the camera pipeline and implementing detection algorithms on the Raspberry Pi. Work is 
+also ongoing to finalize the payload deployment mechanism that will allow the dron e to 
+release a flotation device.  
+ 
+Although some tasks required additional debugging and hardware adjustments, the project 
+remains on track with the overall schedule. Upcoming milestones include completing the 
+computer vision detection system, integrating it with the drone flight platform, and 
+performing full system testing before the final demonstration.  
+ 
+Significant Challenges and Solutions  
+Hardware Integration  
+Integrating the flight electronics, onboard computing hardware, and payload deployment 
+system presented several challenges. The drone must maintain proper weight balance and 
+center of gravity in order to achieve stable flight. Careful placement of the Pixh awk flight 
+controller, Raspberry Pi companion computer, communication modules, and payload 
+mechanism was required to prevent instability during flight operations. Components were 
+repositioned and mounted strategically within the drone frame to maintain bal ance while 
+still allowing access for wiring and maintenance.  
+Wiring and Power Distribution  
+The drone required custom high -current wiring for the propulsion system. Custom 14-
+AWG power cables  were fabricated, soldered, and insulated using heat shrink tubing to 
+connect the electronic speed controllers (ESCs) through the arms of the drone frame. In 
+addition, the battery connectors were replaced with AS150 and XT150 connectors  to 
+support higher current loads and improve connection reliability. These upgrades ensured 
+that the power system could safely handle the electrical demands of the motors and 
+onboard electronics.  
+Communication Interference  
+Wireless communication between the RC control link and the Wi -Fi communication system 
+created potential interference issues. Since the system relies on both RC signals for flight 
+control and Wi -Fi for video streaming and telemetry transmission, interferenc e could 
+result in packet loss or unstable communication. To address this challenge, the team 
+separated communication channels and optimized antenna placement to reduce signal 
+interference and improve transmission reliability.  CECS -490 B: Lifesavers  
+Page 30 of 35 Real -Time Computer Vision Processing  
+Running computer vision algorithms on embedded hardware presented a significant 
+challenge due to limited processing resources on the Raspberry Pi. To develop a reliable 
+detection system, a training dataset of approximately  5,000 images  containing people 
+swimming, drowning, or present near beach environments was collected. Each image 
+required proper annotations in order to train both the YOLOv11 object detection model  
+and a custom convolutional neural network (CNN) . This process required significant time 
+for dataset preparation, annotation, and model training before the detection system could 
+operate effectively.  
+Mechanical Design and 3D Modeling  
+The payload deployment mechanism required several iterations of mechanical design. 
+Initial CAD models developed for earlier demonstrations did not fully meet the design goals 
+for payload deployment and attachment to the drone frame. As a result, the team 
+redesigned several components and explored different deployment mechanisms to 
+improve reliability and structural integration. Updated CAD models were developed to 
+support a more secure payload mounting system and a more reliable deployment 
+mechanism.  
+Stretch Goals  
+Potential stretch goals for the Ocean Watchdogs project include additional features that 
+could further improve the system’s rescue capabilities if more development time were 
+available:  
+• Implementing fully autonomous search patterns  that allow the drone to 
+systematically scan large areas of water without continuous operator control.  
+• Developing a multi -drone coordination system  where multiple drones work 
+together to monitor larger coastal areas and share detection data.  
+• Integrating the system with lifeguard emergency communication networks  to 
+transmit live video, GPS location, and detection alerts directly to rescue personnel.  
+• Adding thermal imaging sensors  to improve swimmer detection during low -
+visibility conditions such as nighttime, fog, or rough weather.  
+These enhancements would expand the operational capabilities of the system and improve 
+its effectiveness as a rapid -response rescue platform.  
+ 
+Project Follow on  
+The Ocean Watchdogs system demonstrates strong potential for commercialization beyond 
+the scope of the senior design project. Drowning remains a significant public safety issue CECS -490 B: Lifesavers  
+Page 31 of 35 worldwide, and many coastal areas rely heavily on human lifeguards who may be limited 
+by distance, visibility, and response time. A drone -based rescue system has the potential to 
+greatly improve emergency response times by quickly locating swimmers in dist ress and 
+delivering flotation support while human responders arrive.  
+Potential commercial applications include use by beach patrols, coastal safety agencies, 
+search -and-rescue teams, and emergency response organizations. The system could also be 
+adapted for use in lakes, rivers, and offshore environments. With further devel opment, 
+Ocean Watchdogs could become part of a larger emergency response network that 
+integrates drone surveillance, automated distress detection, and coordination with 
+lifeguard stations.  
+Several outstanding concerns must be addressed before commercialization is possible. One 
+major challenge is regulatory compliance with aviation authorities such as the Federal 
+Aviation Administration (FAA), which governs the use of unmanned aerial vehicles  in 
+public airspace. Additional safety features, flight restrictions, and certification 
+requirements would need to be implemented before the system could be deployed 
+operationally.  
+Another concern involves improving the reliability and accuracy of the computer vision 
+detection system. False detections or missed detections could affect the effectiveness of the 
+rescue system. Further training of detection models and extensive real -worl d testing in 
+different environmental conditions would be required to ensure reliable operation.  
+Environmental conditions such as wind, saltwater exposure, and weather variability also 
+present challenges for long -term deployment. Future iterations of the system would 
+require more rugged hardware, waterproof components, and improved battery endurance 
+to support extended operations.  
+Addressing these concerns would involve collaboration with regulatory agencies, 
+continued development of the computer vision algorithms, and improvements in drone 
+hardware durability and flight performance. With these advancements, Ocean Watchdogs 
+could ev olve from a prototype into a practical tool for enhancing coastal safety and 
+emergency response capabilities.  
+ 
+Intellectual Property  
+The Ocean Watchdogs project incorporates several design concepts that could potentially 
+be developed into patentable systems if further refined. One unique aspect of the project is 
+the integration of multiple subsystems —autonomous drone flight, computer vi sion 
+detection, and automated flotation device deployment —into a single rescue platform 
+specifically designed for water rescue scenarios. While drones and computer vision 
+technologies already exist independently, the combination of these technologies into a CECS -490 B: Lifesavers  
+Page 32 of 35 coordinated drowning -response system creates a novel application with potential 
+commercial and safety value.  
+A particularly innovative feature of the project is the integration between the onboard 
+computer vision system and the rescue payload deployment mechanism. The system is 
+designed to detect swimmers in distress using real -time video processing and assist 
+operators in quickly delivering a flotation device using an aerial platform. The ability to 
+combine AI -assisted detection, telemetry monitoring, and controlled payload deployment 
+within a compact drone system represents a unique approach to improving respons e time 
+during drowning emergencies.  
+There are several existing technologies that are somewhat similar to aspects of this project. 
+For example, some lifeguard agencies have experimented with rescue drones that deliver 
+flotation devices to swimmers. However, many of these systems rely entirely  on manual 
+operation and do not integrate computer vision detection or autonomous assistance. 
+Additionally, general -purpose drones used for surveillance or search -and-rescue do not 
+typically include integrated payload deployment mechanisms specifically des igned for 
+water rescue.  
+Ocean Watchdogs distinguishes itself by combining autonomous detection capabilities, 
+real -time telemetry monitoring, and a mechanical payload release system into a unified 
+rescue platform. This integrated approach has the potential to significantly improve  
+response times and situational awareness during water emergencies. While additional 
+development and testing would be required before pursuing formal intellectual property 
+protection, the system architecture and integrated rescue workflow present promising  
+opportunities for future innovation.  
+Tools and Methodologies  
+A variety of engineering tools, test equipment, and software were used throughout the 
+design, construction, and testing of the Ocean Watchdogs system. These tools were 
+essential for verifying hardware performance, developing software, and diagnosing 
+integr ation issues during system development.  
+ 
+Test Equipment  
+ 
+Digital multimeters were used to measure and verify voltage levels and current draw 
+across several subsystems. Measurements were taken from the main flight battery, the 
+Pixhawk flight controller power inputs, the Raspberry Pi 4B power rails, and the motor 
+power distribution system. These measurements helped ensure that each component was 
+receiving the proper voltage and that the power system could support the current demands 
+of the motors and onboard electronics.  
+ 
+Oscilloscopes were used to monitor electrical noise and signal behavior on the system 
+power rails. During early testing, the motors were found to introduce electromagnetic 
+interference (EMI) on the Raspberry Pi 4B power lines and connected peripherals. To CECS -490 B: Lifesavers  
+Page 33 of 35 mitigate this issue, decoupling capacitors of 470 µF and 0.1 µF were added across the 
+Raspberry Pi power rails and the Wi -Fi adapter power input. These capacitors reduced 
+voltage ripple and improved overall system stability during motor operation.  
+ 
+Software Development Tools  
+ 
+Python was used for developing the computer vision and communication software running 
+on the Raspberry Pi companion computer. OpenCV libraries were used to process camera 
+input and perform human detection within the video stream. Code was developed and 
+tested on the Raspberry Pi environment before being integrated with the full drone system.  
+ 
+Flight Control Software  
+ 
+The drone flight system was configured using the ArduPilot flight stack running on the 
+Pixhawk flight controller. Ground control software was used to configure flight parameters, 
+upload waypoint missions, and monitor telemetry data during testing and fligh t operations.  
+ 
+Mechanical Design Tools  
+ 
+Computer -aided design (CAD) software was used to design mechanical components of the 
+payload deployment system. These CAD models allowed the team to design and visualize 
+the payload housing, clamp mechanisms, and release components before fabrication.  
+ 
+Together, these tools and methodologies allowed the team to systematically design, test, 
+and refine the Ocean Watchdogs system while identifying and resolving hardware and 
+software issues throughout the development process.  
+ 
+Ethics  
+The Ocean Watchdogs project raises several ethical considerations related to safety, 
+privacy, and responsible use of autonomous technology. Because the system is designed for 
+emergency rescue situations, reliability and safety are critical ethical responsi bilities for 
+the engineering team. A malfunctioning drone or incorrect system decision could 
+potentially create additional risks during an already dangerous situation. For this reason, 
+the project emphasizes extensive testing, system verification, and the ability for human 
+operators to override automated decisions.  
+Another important ethical concern involves privacy. The drone system uses cameras and 
+computer vision to monitor areas where swimmers may be present. While the intention of 
+the system is to detect individuals in distress and assist in rescue operations, it  is important 
+that any video data collected is used only for safety purposes and not stored or distributed 
+unnecessarily. Responsible operation of the system requires that it be deployed only in 
+designated rescue or safety zones and that all collected data  be handled in a way that 
+respects public privacy.  CECS -490 B: Lifesavers  
+Page 34 of 35 Safety of bystanders and operators is also a key ethical issue. Drones operating over water 
+and nearby  people must follow strict safety procedures to prevent injury or equipment 
+failure. The system must maintain stable flight, avoid collisions, and operate within safe 
+altitude and distance limits. Additionally, operators must follow regulations and guideli nes 
+for unmanned aerial vehicle operations  to ensure safe deployment in public environments.  
+Finally, engineers developing systems like Ocean Watchdogs must consider the ethical 
+responsibility of designing technology that benefits society. The goal of this project is to 
+improve response times in drowning emergencies and support lifeguards in savin g lives. 
+By focusing on safety, reliability, and responsible use of technology, the project aims to 
+demonstrate how engineering solutions can be developed ethically to address real -world 
+public safety challenges.  
+  CECS -490 B: Lifesavers  
+Page 35 of 35 Appendix:  
+[1] Pixhawk, “Pixhawk Autopilot Documentation.” [Online]. Available: https://pixhawk.org  
+[2] Raspberry Pi, “Raspberry Pi Documentation.” [Online]. Available: 
+https://www.raspberrypi.com/documentation/  
+[3] OpenCV, “OpenCV Library Documentation.” [Online]. Available: https://docs.opencv.org  
+[4] ArduPilot, “ArduPilot Flight Stack Documentation.” [Online]. Available: 
+https://ardupilot.org  
+[5] MAVLink, “MAVLink Messaging Protocol.” [Online]. Available: https://mavlink.io  
+[6]CurryKitten (2024, October 12). Open.HD - getting a great picture final. It’s all about the 
+antennas!. YouTube. https://www.youtube.com/watch?v=vobBVmjNS4w  
+[7] Printables, “Payload Dropper Mechanism.” [Online]. Available: 
+https://www.printables.com/model/1326088 -payload -dropper -mechanism  
+ 
+ 
+AI Acknowledgement  
+The authors acknowledge the use of ChatGPT (OpenAI) as an assistance tool during the 
+development of this project. ChatGPT was used to support technical writing, figure caption 
+drafting, system diagram organization, and formatting guidance. All engineering design 
+decisions, system implementation, testing, and final documentation content were reviewed 
+and validated by the project team.  
+ 
+ 
